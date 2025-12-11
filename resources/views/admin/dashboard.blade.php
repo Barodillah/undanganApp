@@ -36,15 +36,77 @@
                   <img src="images/dashboard/people.svg" alt="people">
                   <div class="weather-info">
                     <div class="d-flex">
-                      <div>
-                        <h2 class="mb-0 font-weight-normal"><i class="icon-sun mr-2"></i>31<sup>C</sup></h2>
-                      </div>
-                      <div class="ml-2">
-                        <h4 class="location font-weight-normal">Bangalore</h4>
-                        <h6 class="font-weight-normal">India</h6>
-                      </div>
+                        <div>
+                        <h2 class="mb-0 font-weight-normal">
+                            <i class="icon-sun mr-2"></i><span id="w-temp">--</span><sup>°C</sup>
+                        </h2>
+                        </div>
+                        <div class="ml-2">
+                        <h4 class="location font-weight-normal" id="w-city">Jakarta</h4>
+                        <h6 class="font-weight-normal" id="w-country">Indonesia</h6>
+                        </div>
                     </div>
-                  </div>
+                    </div>
+
+                    <script>
+                    (async function(){
+                    const defaultCity = 'Jakarta';
+                    const city = defaultCity;
+
+                    const tempEl = document.getElementById('w-temp');
+                    const cityEl = document.getElementById('w-city');
+                    const countryEl = document.getElementById('w-country');
+
+                    tempEl.textContent = '...';
+
+                    try {
+                        // Geocoding
+                        const geocodeUrl =
+                        'https://geocoding-api.open-meteo.com/v1/search?name=' +
+                        encodeURIComponent(city) +
+                        '&count=1&language=en&format=json';
+
+                        const gResp = await fetch(geocodeUrl);
+                        const gData = await gResp.json();
+
+                        let latitude, longitude, name, country;
+
+                        if (gData && gData.results && gData.results.length > 0) {
+                        const r = gData.results[0];
+                        latitude = r.latitude;
+                        longitude = r.longitude;
+                        name = r.name || city;
+                        country = r.country || '';
+                        } else {
+                        latitude = -6.2087634;
+                        longitude = 106.845598;
+                        name = 'Jakarta';
+                        country = 'Indonesia';
+                        }
+
+                        cityEl.textContent = name;
+                        countryEl.textContent = country;
+
+                        // Weather
+                        const weatherUrl =
+                        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=auto`;
+
+                        const wResp = await fetch(weatherUrl);
+                        const wData = await wResp.json();
+
+                        if (wData && wData.current_weather) {
+                        tempEl.textContent = Math.round(wData.current_weather.temperature);
+                        } else {
+                        tempEl.textContent = '-';
+                        }
+
+                    } catch (e) {
+                        tempEl.textContent = '-';
+                        cityEl.textContent = 'Jakarta';
+                        countryEl.textContent = 'Indonesia';
+                    }
+                    })();
+                    </script>
                 </div>
               </div>
             </div>
