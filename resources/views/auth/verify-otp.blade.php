@@ -26,6 +26,19 @@
 
               <input type="hidden" name="email" value="{{ $email }}">
 
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+
               <div class="form-group d-flex justify-content-center">
                 <input type="text" name="code"
                   class="form-control form-control-lg text-center"
@@ -42,7 +55,7 @@
 
               <div class="text-center mt-4 font-weight-light">
                 Didn’t receive the code?
-                <a href="/resendotp" class="text-primary">Resend</a>
+                <a href="{{ route('otp.resend', ['email' => $email]) }}" class="text-primary">Resend</a>
               </div>
 
             </form>

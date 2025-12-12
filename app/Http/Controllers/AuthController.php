@@ -29,16 +29,27 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = DB::table('users')->where('username', $request->username)->first();
+        $user = User::where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->with('error', 'Username atau password salah');
         }
 
-        session()->put('user_id', $user->id);
-        session()->put('user_name', $user->name);
-        session()->put('user_username', $user->username);
-        session()->put('role_id', $user->role_id);
+        // Cek apakah email sudah diverifikasi hanya untuk role_id 3
+        if ($user->role_id == 3 && is_null($user->email_verified_at)) {
+            return redirect()->route('otp.form', ['email' => $user->email]);
+        }
+
+
+        // Cek apakah name atau phone masih kosong/null
+        if (empty($user->name) || empty($user->phone)) {
+            // Login dulu supaya auth()->user() ada
+            Auth::login($user);
+            return redirect()->route('profile.complete');
+        }
+
+        // Login user
+        Auth::login($user);
 
         return redirect('/admin');
     }
@@ -53,6 +64,10 @@ class AuthController extends Controller
     }
 
     public function registerForm() {
+        if (auth()->check()) {
+            return redirect('/admin');
+        }
+        
         return view('auth.register');
     }
 
@@ -85,6 +100,43 @@ class AuthController extends Controller
         return redirect()->route('otp.form', ['email' => $user->email]);
     }
 
+    // AuthController.php
+    public function resendOtp(Request $request)
+    {
+        // Pastikan ada query email
+        $email = $request->query('email');
+        if (!$email) {
+            return back()->with('error', 'Email tidak ditemukan untuk resend OTP.');
+        }
+
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            return back()->with('error', 'User dengan email ini tidak ditemukan.');
+        }
+
+        // Buat OTP baru
+        $otp = rand(100000, 999999);
+
+        // Tandai OTP lama sebagai expired / used
+        Otp::where('user_id', $user->id)
+            ->whereNull('used_at')
+            ->update(['used_at' => now()]);
+
+        // Simpan OTP baru
+        Otp::create([
+            'user_id' => $user->id,
+            'code' => $otp,
+            'type' => 'email',
+            'expires_at' => now()->addMinutes(5),
+        ]);
+
+        // Kirim email OTP baru
+        Mail::to($user->email)->send(new OtpMail($otp));
+
+        return redirect()->route('otp.form', ['email' => $user->email])
+                        ->with('success', 'OTP baru telah dikirim ke email Anda.');
+    }
+
     public function verifyOtpForm(Request $request)
     {
         return view('auth.verify-otp', [
@@ -111,7 +163,7 @@ class AuthController extends Controller
         }
 
         if ($otp->expires_at < now()) {
-            return back()->with('error', 'OTP expired');
+            return back()->with('error', 'OTP expired, resend OTP now!');
         }
 
         // Set OTP used
@@ -160,6 +212,12 @@ class AuthController extends Controller
 
         $user->update($data);
 
-        return redirect('/dashboard')->with('success', 'Profile completed!');
+        // Logout user dan hapus semua session
+        auth()->logout();
+        session()->flush();
+
+        // Redirect ke login dengan alert success
+        return redirect()->route('login')->with('success', 'Profile berhasil disimpan. Silakan login kembali.');
     }
+
 }

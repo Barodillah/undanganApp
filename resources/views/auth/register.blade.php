@@ -21,24 +21,43 @@
               @csrf
 
               <div class="form-group">
-                <input type="text" name="username" class="form-control form-control-lg"
-                  placeholder="Username" required>
+                  <input type="text" name="username"
+                        class="form-control form-control-lg @error('username') is-invalid @enderror"
+                        placeholder="Username"
+                        value="{{ old('username') }}" required>
+                  @error('username')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="email" name="email" class="form-control form-control-lg"
-                  placeholder="Email" required>
+                  <input type="email" name="email"
+                        class="form-control form-control-lg @error('email') is-invalid @enderror"
+                        placeholder="Email"
+                        value="{{ old('email') }}" required>
+                  @error('email')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="password" name="password"
-                  class="form-control form-control-lg" placeholder="Password" required>
+                  <input type="password" name="password"
+                        class="form-control form-control-lg @error('password') is-invalid @enderror"
+                        placeholder="Password" required>
+                  @error('password')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="password" name="password_confirmation"
-                  class="form-control form-control-lg" placeholder="Confirm Password" required>
+                  <input type="password" name="password_confirmation"
+                        class="form-control form-control-lg @error('password_confirmation') is-invalid @enderror"
+                        placeholder="Confirm Password" required>
+                  @error('password_confirmation')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
+
 
               <div class="mb-4">
                 <div class="form-check">

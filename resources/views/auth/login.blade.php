@@ -23,6 +23,12 @@
                       </div>
                   @endif
 
+                  @if (session('success'))
+                      <div class="alert alert-success">
+                          {{ session('success') }}
+                      </div>
+                  @endif
+
                   <div class="form-group">
                       <input type="text" name="username" class="form-control form-control-lg" placeholder="Username" required>
                   </div>

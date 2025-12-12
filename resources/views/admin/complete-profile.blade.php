@@ -22,48 +22,73 @@
               @csrf
 
               <div class="form-group">
-                <input type="text" name="name" class="form-control form-control-lg"
-                  placeholder="Full Name" required>
+                  <input type="text" name="name" class="form-control form-control-lg @error('name') is-invalid @enderror"
+                        placeholder="Full Name" value="{{ old('name', auth()->user()->name) }}" required>
+                  @error('name')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="text" name="phone" class="form-control form-control-lg"
-                  placeholder="Phone Number">
+                  <input type="text" name="phone" class="form-control form-control-lg @error('phone') is-invalid @enderror"
+                        placeholder="Phone Number" value="{{ old('phone', auth()->user()->phone) }}">
+                  @error('phone')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <select name="gender" class="form-control form-control-lg">
-                  <option value="">Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
+                  <select name="gender" class="form-control form-control-lg @error('gender') is-invalid @enderror">
+                      <option value="">Gender</option>
+                      <option value="male" {{ old('gender', auth()->user()->gender) == 'male' ? 'selected' : '' }}>Male</option>
+                      <option value="female" {{ old('gender', auth()->user()->gender) == 'female' ? 'selected' : '' }}>Female</option>
+                      <option value="other" {{ old('gender', auth()->user()->gender) == 'other' ? 'selected' : '' }}>Other</option>
+                  </select>
+                  @error('gender')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="date" name="birthdate" class="form-control form-control-lg"
-                  placeholder="Birthdate">
+                  <input type="date" name="birthdate" class="form-control form-control-lg @error('birthdate') is-invalid @enderror"
+                        placeholder="Birthdate" value="{{ old('birthdate', auth()->user()->birthdate) }}">
+                  @error('birthdate')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <textarea name="address" class="form-control form-control-lg"
-                  placeholder="Full Address"></textarea>
+                  <textarea name="address" class="form-control form-control-lg @error('address') is-invalid @enderror"
+                            placeholder="Full Address">{{ old('address', auth()->user()->address) }}</textarea>
+                  @error('address')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="text" name="city" class="form-control form-control-lg"
-                  placeholder="City">
+                  <input type="text" name="city" class="form-control form-control-lg @error('city') is-invalid @enderror"
+                        placeholder="City" value="{{ old('city', auth()->user()->city) }}">
+                  @error('city')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="text" name="province" class="form-control form-control-lg"
-                  placeholder="Province">
+                  <input type="text" name="province" class="form-control form-control-lg @error('province') is-invalid @enderror"
+                        placeholder="Province" value="{{ old('province', auth()->user()->province) }}">
+                  @error('province')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="form-group">
-                <input type="text" name="country" class="form-control form-control-lg"
-                  placeholder="Country">
+                  <input type="text" name="country" class="form-control form-control-lg @error('country') is-invalid @enderror"
+                        placeholder="Country" value="{{ old('country', auth()->user()->country) }}">
+                  @error('country')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
+
 
               <div class="form-group">
                 <label class="mb-1">Avatar (optional)</label>
