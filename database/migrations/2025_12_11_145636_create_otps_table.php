@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('code', 6);
-            $table->enum('type', ['email','phone']);
+            $table->enum('type', ['email','phone','forgot']);
             $table->timestamp('expires_at');
             $table->timestamp('used_at')->nullable();
             $table->timestamps();

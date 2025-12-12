@@ -14,7 +14,11 @@
               <img src="/images/logo.svg" alt="logo">
             </div>
 
-            <h4>Email Verification</h4>
+            <h4>
+              {{ request('type') === 'forgot' 
+                    ? 'Reset Password Verification' 
+                    : 'Email Verification' }}
+            </h4>
             <p class="font-weight-light mb-4">
               Enter the 6-digit code we sent to:
               <br>
@@ -25,6 +29,7 @@
               @csrf
 
               <input type="hidden" name="email" value="{{ $email }}">
+              <input type="hidden" name="type" value="{{ $type }}">
 
                 @if(session('error'))
                     <div class="alert alert-danger">
@@ -55,7 +60,7 @@
 
               <div class="text-center mt-4 font-weight-light">
                 Didn’t receive the code?
-                <a href="{{ route('otp.resend', ['email' => $email]) }}" class="text-primary">Resend</a>
+                <a href="{{ route('otp.resend', ['email' => $email, 'type' => $type]) }}" class="text-primary">Resend</a>
               </div>
 
             </form>

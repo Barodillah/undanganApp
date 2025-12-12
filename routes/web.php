@@ -30,3 +30,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [AuthController::class, 'completeForm'])->name('profile.complete');
     Route::post('/profile', [AuthController::class, 'completeStore'])->name('profile.complete.store');
 });
+
+// Forgot Password - Form Input Email
+Route::get('/forgot', [AuthController::class, 'forgotForm'])->name('forgot');
+
+// Proses Kirim OTP ke Email
+Route::post('/forgot', [AuthController::class, 'sendOtpForgot'])->name('forgot.send');
+
+// Form Reset Password Baru
+Route::get('/forgot/reset', [AuthController::class, 'resetPasswordForm'])->name('forgot.reset');
+
+// Proses Simpan Password Baru
+Route::post('/forgot/reset', [AuthController::class, 'resetPassword'])->name('forgot.reset.post');

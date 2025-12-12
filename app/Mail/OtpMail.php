@@ -10,14 +10,16 @@ class OtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $otp; // public agar bisa dipakai di view
+    public $otp;
+    public $type;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($otp)
+    public function __construct($otp, $type)
     {
         $this->otp = $otp;
+        $this->type = $type;
     }
 
     /**
@@ -25,7 +27,12 @@ class OtpMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Your OTP Code')
-                    ->view('emails.otp'); // view email
+        // Judul dinamis berdasarkan type
+        $title = $this->type === 'forgot'
+            ? 'Reset Password OTP Code'
+            : 'Registration OTP Code';
+
+        return $this->subject($title)
+                    ->view('emails.otp');
     }
 }
