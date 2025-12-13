@@ -6,13 +6,13 @@
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          <li class="nav-item {{ request()->is('event') ? 'active' : '' }}">
-            <a class="nav-link" href="/event">
+          <li class="nav-item {{ request()->is('events*') ? 'active' : '' }}">
+            <a class="nav-link" href="/events">
               <i class="ti-calendar menu-icon"></i>
-              <span class="menu-title">Event</span>
+              <span class="menu-title">Events</span>
             </a>
           </li>
-          <li class="nav-item {{ request()->is('visitor') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is('visitor*') ? 'active' : '' }}">
             <a class="nav-link" href="/visitor">
               <i class="ti-user menu-icon"></i>
               <span class="menu-title">Visitor</span>
@@ -32,11 +32,19 @@
               </ul>
             </div>
           </li>
-          <li class="nav-item">
+          @if(auth()->user()->role_id == 1)
+          <li class="nav-item {{ request()->is('users*') ? 'active' : '' }}">
+            <a class="nav-link" href="/users">
+              <i class="ti-user menu-icon"></i>
+              <span class="menu-title">Users</span>
+            </a>
+          </li>
+          @endif
+          <!-- <li class="nav-item">
             <a class="nav-link" href="/logout">
               <i class="ti-power-off menu-icon"></i>
               <span class="menu-title">Log Out</span>
             </a>
-          </li>
+          </li> -->
         </ul>
       </nav>

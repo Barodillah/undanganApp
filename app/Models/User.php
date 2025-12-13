@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Role;
 
 class User extends Authenticatable
 {
@@ -32,6 +33,7 @@ class User extends Authenticatable
         'province',
         'country',
         'avatar',
+        'last_login_at',
     ];
 
     /**
@@ -56,4 +58,32 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    protected $casts = [
+        'last_login_at' => 'datetime',
+        'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
+    ];
+
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role_id == 1;
+    }
+
+    public function isAdmin()
+    {
+        return $this->role_id == 2;
+    }
+
+    public function isUser()
+    {
+        return $this->role_id == 3;
+    }
+
 }

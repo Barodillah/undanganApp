@@ -11,7 +11,9 @@
 
           <div class="auth-form-light text-left py-5 px-4 px-sm-5 text-center">
             <div class="brand-logo mb-4">
-              <img src="/images/logo.svg" alt="logo">
+                <a href="/">
+                  <img src="../../images/logo.svg" alt="logo">
+                </a>
             </div>
 
             <h4>

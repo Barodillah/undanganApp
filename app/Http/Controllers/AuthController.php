@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Otp;
 use App\Mail\OtpMail;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -35,21 +36,55 @@ class AuthController extends Controller
             return back()->with('error', 'Username atau password salah');
         }
 
-        // Cek apakah email sudah diverifikasi hanya untuk role_id 3
-        if ($user->role_id == 3 && is_null($user->email_verified_at)) {
-            return redirect()->route('otp.form', ['email' => $user->email]);
+        /**
+         * ===============================
+         * WAJIB VERIFIKASI EMAIL
+         * ===============================
+         */
+        if ($user->role_id != 1 && is_null($user->email_verified_at)) {
+
+            $otp = Otp::where('user_id', $user->id)
+                ->where('type', 'email')
+                ->whereNull('used_at')
+                ->where('expires_at', '>', now())
+                ->latest()
+                ->first();
+
+            if (!$otp) {
+                $otp = Otp::create([
+                    'user_id'    => $user->id,
+                    'code'       => rand(100000, 999999),
+                    'type'       => 'email',
+                    'expires_at' => now()->addMinutes(5),
+                ]);
+
+                Mail::to($user->email)->send(
+                    new OtpMail($otp->code, 'email')
+                );
+            }
+
+            return redirect()->route('otp.form', [
+                'email' => $user->email,
+                'type'  => 'email'
+            ]);
         }
 
+        /**
+         * ===============================
+         * LOGIN USER
+         * ===============================
+         */
+        Auth::login($user);
 
-        // Cek apakah name atau phone masih kosong/null
+        // ✅ UPDATE LAST LOGIN (JAKARTA TIME)
+        $user->update([
+            'last_login_at' => now('Asia/Jakarta'),
+        ]);
+
+        // Cek profile belum lengkap
         if (empty($user->name) || empty($user->phone)) {
-            // Login dulu supaya auth()->user() ada
-            Auth::login($user);
             return redirect()->route('profile.complete');
         }
-
-        // Login user
-        Auth::login($user);
 
         return redirect('/admin');
     }

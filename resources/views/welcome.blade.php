@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="assets/css/LineIcons.2.0.css"/>
     <link rel="stylesheet" href="assets/css/animate.css"/>
     <link rel="stylesheet" href="assets/css/lindy-uikit.css"/>
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
   </head>
   <body>
     <!--[if lte IE 9]>
@@ -52,7 +53,7 @@
             <div class="row align-items-center">
               <div class="col-lg-12">
                 <nav class="navbar navbar-expand-lg">
-                  <a class="navbar-brand" href="index.html">
+                  <a class="navbar-brand" href="/">
                     <img src="assets/img/logo/logo.svg" alt="Logo" />
                   </a>
                   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false" aria-label="Toggle navigation">

@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthSession;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventsController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +27,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
+    // Route::get('/events', [EventsController::class, 'index'])->name('admin.events');
+    Route::resource('events', EventsController::class);
+    Route::resource('users', UserController::class);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/profile', [AuthController::class, 'completeForm'])->name('profile.complete');
