@@ -63,89 +63,78 @@
           @endif
 
           <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                    @if(!isset($event))
-                    <th>Acara</th>
-                    @endif
-                  <th>Nama</th>
-                  <th>Alamat</th>
-                  <th>Kode</th>
-                  <th>Status</th>
-                  @if(auth()->user()->role_id != 2)
-                  <th width="150">Aksi</th>
-                  @endif
-                </tr>
-              </thead>
-              <tbody>
-                @forelse($visitors as $visitor)
-                  @php
-                    $kode = strtoupper(substr($visitor->name,0,3)).'-'.
-                            str_pad($visitor->event_id,3,'0',STR_PAD_LEFT).'-'.
-                            str_pad($visitor->id,3,'0',STR_PAD_LEFT);
-                  @endphp
-                  <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    @if(!isset($event))
-                    <td>
-                    <span class="badge badge-info">
-                        {{ $visitor->event->title ?? '-' }}
-                    </span>
-                    </td>
-                    @endif
-                    <td>{{ $visitor->name }}</td>
-                    <td>{{ \Illuminate\Support\Str::limit($visitor->address ?? '-', 10, '...') }}</td>
-                    <td>
-                        <span class="badge bg-dark text-white cursor-pointer"
-                            onclick="openBarcodeModal(
-                                '{{ $visitor->kode }}',
-                                '{{ $visitor->name }}',
-                                '{{ $visitor->event->title ?? '-' }}'
-                            )">
-                            {{ $visitor->kode }}
-                        </span>
-                    </td>
-                    <td>
-                      <label class="badge badge-{{ 
-                        $visitor->attendance_status == 'hadir' ? 'success' :
-                        ($visitor->attendance_status == 'tidak_hadir' ? 'danger' : 'secondary')
-                      }}">
-                        {{ ucfirst(str_replace('_',' ', $visitor->attendance_status)) }}
-                      </label>
-                    </td>
-                    @if(auth()->user()->role_id != 2)
-                    <td>
-                      <a href="{{ route('visitors.edit', $visitor->id) }}"
-                         class="btn btn-warning btn-sm"
-                         title="Edit">
-                        <i class="fas fa-edit"></i>
-                      </a>
-
-                      <form action="{{ route('visitors.destroy', $visitor->id) }}"
-                            method="POST"
-                            class="d-inline delete-visitor-form">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button"
-                                class="btn btn-danger btn-sm btn-delete-visitor"
-                                title="Hapus">
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
-                      </form>
-                    </td>
-                    @endif
-                  </tr>
-                @empty
-                  <tr>
-                    <td colspan="7" class="text-center">
-                      Belum ada data visitor
-                    </td>
-                  </tr>
-                @endforelse
-              </tbody>
-            </table>
+              <table id="visitorsTable" class="table table-striped dt-responsive nowrap" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th>#</th>
+                          @if(!isset($event))
+                          <th>Acara</th>
+                          @endif
+                          <th>Nama</th>
+                          <th>Alamat</th>
+                          <th>Kode</th>
+                          <th>Status</th>
+                          @if(auth()->user()->role_id != 2)
+                          <th width="150">Aksi</th>
+                          @endif
+                      </tr>
+                  </thead>
+                  <tbody>
+                      @forelse($visitors as $visitor)
+                      @php
+                          $kode = strtoupper(preg_replace('/[^A-Za-z]/','',substr($visitor->name,0,3)))
+                                  . '-' . str_pad($visitor->event_id,3,'0',STR_PAD_LEFT)
+                                  . '-' . str_pad($visitor->id,3,'0',STR_PAD_LEFT);
+                      @endphp
+                      <tr>
+                          <td>{{ $loop->iteration }}</td>
+                          @if(!isset($event))
+                          <td>
+                              <span class="badge badge-info">
+                                  {{ $visitor->event->title ?? '-' }}
+                              </span>
+                          </td>
+                          @endif
+                          <td>{{ $visitor->name }}</td>
+                          <td>{{ \Illuminate\Support\Str::limit($visitor->address ?? '-', 10, '...') }}</td>
+                          <td>
+                              <span class="badge bg-dark text-white cursor-pointer"
+                                    onclick="openBarcodeModal('{{ $kode }}', '{{ $visitor->name }}', '{{ $visitor->event->title ?? '-' }}')">
+                                  {{ $kode }}
+                              </span>
+                          </td>
+                          <td>
+                              <label class="badge badge-{{ 
+                                  $visitor->attendance_status == 'hadir' ? 'success' :
+                                  ($visitor->attendance_status == 'tidak_hadir' ? 'danger' : 'secondary')
+                              }}">
+                                  {{ ucfirst(str_replace('_',' ', $visitor->attendance_status)) }}
+                              </label>
+                          </td>
+                          @if(auth()->user()->role_id != 2)
+                          <td>
+                              <a href="{{ route('visitors.edit', $visitor->id) }}"
+                                class="text-warning" title="Edit">
+                                  <i class="fas fa-edit"></i>
+                              </a>
+                              <form action="{{ route('visitors.destroy', $visitor->id) }}"
+                                    method="POST" class="d-inline delete-visitor-form">
+                                  @csrf
+                                  @method('DELETE')
+                                  <a type="button" class="text-danger btn-delete-visitor" title="Hapus">
+                                      <i class="fas fa-trash-alt"></i>
+                                  </a>
+                              </form>
+                          </td>
+                          @endif
+                      </tr>
+                      @empty
+                      <tr>
+                          <td colspan="7" class="text-center">Belum ada data visitor</td>
+                      </tr>
+                      @endforelse
+                  </tbody>
+              </table>
           </div>
 
         </div>
@@ -180,6 +169,43 @@
         </a>
     </div>
 </div>
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#visitorsTable').DataTable({
+        responsive: true,
+        autoWidth: false,
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ entri",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+            paginate: {
+                first: "Pertama",
+                last: "Terakhir",
+                next: "Berikutnya",
+                previous: "Sebelumnya"
+            },
+            zeroRecords: "Data tidak ditemukan"
+        },
+        order: [[0, 'asc']], // default sort by first column
+        columnDefs: [
+            { orderable: false, targets: -1 }, // kolom aksi tidak bisa sort
+            { searchable: false, targets: -1 } // kolom aksi tidak bisa search
+        ]
+    });
+});
+</script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
