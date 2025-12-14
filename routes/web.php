@@ -6,6 +6,9 @@ use App\Http\Middleware\AuthSession;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\CheckInController;
+use App\Http\Controllers\QrController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +26,8 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+
+    Route::get('/qr', [QrController::class, 'generate'])->name('qr.generate');
 });
 
 Route::middleware('auth')->group(function () {
@@ -30,6 +35,14 @@ Route::middleware('auth')->group(function () {
     // Route::get('/events', [EventsController::class, 'index'])->name('admin.events');
     Route::resource('events', EventsController::class);
     Route::resource('users', UserController::class);
+
+    Route::get('visitors/event/{event:slug}', [VisitorController::class, 'byEvent'])
+    ->name('visitors.byEvent');
+    Route::resource('visitors', VisitorController::class);
+
+    Route::get('/check-in', [CheckInController::class, 'index'])->name('checkin.index');
+    Route::get('/check-in/verify', [CheckInController::class, 'verify'])->name('checkin.verify');
+
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/profile', [AuthController::class, 'completeForm'])->name('profile.complete');

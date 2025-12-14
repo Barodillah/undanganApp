@@ -12,10 +12,10 @@
               <span class="menu-title">Events</span>
             </a>
           </li>
-          <li class="nav-item {{ request()->is('visitor*') ? 'active' : '' }}">
-            <a class="nav-link" href="/visitor">
+          <li class="nav-item {{ request()->is('visitors*') ? 'active' : '' }}">
+            <a class="nav-link" href="/visitors">
               <i class="ti-user menu-icon"></i>
-              <span class="menu-title">Visitor</span>
+              <span class="menu-title">Visitors</span>
             </a>
           </li>
           <li class="nav-item">

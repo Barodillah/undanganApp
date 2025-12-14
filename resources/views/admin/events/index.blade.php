@@ -56,8 +56,19 @@
                     </label>
                   </td>
                   <td>
+                    <a href="{{ route('visitors.byEvent', $event->slug) }}"
+                        class="btn btn-info btn-sm"
+                        title="Visitors">
+                        <i class="fas fa-users"></i>
+                    </a>
                     @if(auth()->user()->role_id != 2 &&
                         (auth()->user()->role_id != 3 || $event->user_id == auth()->id()))
+                    <a href="/check-in?acara={{ $event->slug }}"
+                        class="btn btn-secondary btn-sm"
+                        title="Visitors">
+                        <i class="fas fa-qrcode"></i>
+                    </a>
+                    
                     <a href="{{ route('events.edit', $event->slug) }}"
                         class="btn btn-warning btn-sm"
                         title="Edit">

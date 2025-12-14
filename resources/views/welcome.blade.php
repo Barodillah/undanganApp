@@ -533,8 +533,47 @@
           </div>
         </div>
         <div class="copyright-wrapper wow fadeInUp" data-wow-delay=".2s">
-          <p>Design and Developed by <a href="https://uideck.com" rel="nofollow" target="_blank">UIdeck</a> Built-with <a href="#">Lindy UI Kit</a>. Distibuted by <a href="https://themewagon.com" target="_blank">ThemeWagon</a></p>
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+            <!-- Kiri -->
+            <span class="text-muted text-center text-sm-left">
+              © <span id="currentYear"></span>
+              <a href="/" target="_blank"><strong>JB Events</strong></a>.
+              All rights reserved.
+            </span>
+
+            <!-- Kanan -->
+            <span class="text-muted text-center text-sm-right mt-1 mt-sm-0">
+              <span id="jb-rotating-text">Creating unforgettable events</span>
+            </span>
+          </div>
         </div>
+
+        <script>
+          // Tahun otomatis
+          document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+          // Rotating text
+          const texts = [
+            "Creating unforgettable events",
+            "Smart event & ticketing platform",
+            "Powered by passion & technology",
+            "Your trusted event partner",
+            "Built for memorable moments",
+            "Made with ❤️ for your events",
+            "Manage events faster & smarter",
+            "From planning to execution",
+            "Designed for event organizers",
+            "One platform, endless events"
+          ];
+
+          let index = 0;
+          const textElement = document.getElementById('jb-rotating-text');
+
+          setInterval(() => {
+            index = (index + 1) % texts.length;
+            textElement.textContent = texts[index];
+          }, 3000);
+        </script>
       </div>
     </footer>
     <!-- ========================= footer style-1 end ========================= -->
